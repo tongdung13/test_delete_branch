@@ -32,8 +32,11 @@ class ProcessPodcast implements ShouldQueue
     {
         // $log = new Logger('Test thoi nha');
         $category = Category::query()->get();
-        if (empty($category)) {
-            Log::channel('daily')->info('No data');
+        if ($category->isEmpty()) {
+            Log::build([
+                'driver' => 'daily',
+                'path' => storage_path('logs/Test_thoi_nha' ). '.log',
+            ])->info('No data');
             return;
         }
         Log::build([

@@ -34,7 +34,7 @@ class CategoryController extends Controller
             $categories = $categories->where('name', 'like', '%' . $name . '%');
         }
         $categories = $categories->get();
-        ProcessPodcast::dispatch()->onQueue('processing');
+        ProcessPodcast::dispatch()->delay(now()->addMinutes(2));
 
         return view('admin.categories.index', compact('categories'));
     }
@@ -44,11 +44,11 @@ class CategoryController extends Controller
         return Excel::download(new CategoryExport($request), 'category.xlsx');
     }
 
-    public function sendMail()
+    public function sendMail(Request $request)
     {
         $mail = 'tong.van.dung@vinicorp.com.vn';
 
-        // Mail::to($mail)->send(new TestMail());
+        Mail::to($mail)->send(new TestMail($request));
         return redirect()->route('categories.index');
     }
 
