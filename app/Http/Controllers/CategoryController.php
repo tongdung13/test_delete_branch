@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\CategoryExport;
+use App\Jobs\ProcessPodcast;
 use App\Mail\TestMail;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -32,6 +33,7 @@ class CategoryController extends Controller
             $categories = $categories->where('name', 'like', '%' . $name . '%');
         }
         $categories = $categories->get();
+        ProcessPodcast::dispatch()->onQueue('processing');
 
         return view('admin.categories.index', compact('categories'));
     }
@@ -45,7 +47,7 @@ class CategoryController extends Controller
     {
         $mail = 'tong.van.dung@vinicorp.com.vn';
 
-        Mail::to($mail)->send(new TestMail());
+        // Mail::to($mail)->send(new TestMail());
         return redirect()->route('categories.index');
     }
 }
