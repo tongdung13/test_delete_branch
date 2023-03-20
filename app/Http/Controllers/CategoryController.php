@@ -8,6 +8,7 @@ use App\Mail\TestMail;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Excel as ExcelExcel;
 use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryController extends Controller
@@ -49,5 +50,10 @@ class CategoryController extends Controller
 
         // Mail::to($mail)->send(new TestMail());
         return redirect()->route('categories.index');
+    }
+
+    public function pdf(Request $request)
+    {
+        return Excel::download(new CategoryExport($request), 'category.pdf', ExcelExcel::DOMPDF);
     }
 }

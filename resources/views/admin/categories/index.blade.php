@@ -19,6 +19,9 @@
                         <a href="{{ route('categories.export', [
                             'name' => request('name')
                         ]) }}" class="btn btn-primary">Export</a>
+                        <a href="{{ route('categories.pdf', [
+                            'name' => request('name')
+                        ]) }}" class="btn btn-primary">Pdf</a>
                     </div>
 
 
