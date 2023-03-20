@@ -24,3 +24,4 @@ Route::prefix('categories')->group(function () {
     Route::get('pdf', [CategoryController::class, 'pdf'])->name('categories.pdf');
     Route::get('send-mail', [CategoryController::class, 'sendMail'])->name('categories.sendMail');
 });
+Route::post('sendmessage', [ChatController::class, 'sendMessage'])->name('chat');

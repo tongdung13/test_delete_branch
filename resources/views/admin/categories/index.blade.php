@@ -1,33 +1,54 @@
-@extends('admin.layouts.app')
-
+@extends('layouts.app')
 @section('content')
-    <hr>
-    <div class="container">
-        <div class="row">
-            <div class="col-6">
-                <h1>Category List</h1>
-            </div>
-            <div class="col-6">
-                <form action="{{ route('categories.index') }}" method="get">
-                    <div style="float: right;">
-                        <div class="form-group">
-                            <input type="text" name="name" value="{{ request('name') }}" class="form-control"
-                                placeholder="Name" style="width: 200px;">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+<div class="container spark-screen">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="panel panel-default">
+                <div class="panel-heading">Chat Message Module</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-8" >
+                            <div id="messages" style="border: 1px solid #121212; margin-bottom: 5px; height: 250px; padding: 2px; overflow: scroll;"></div>
                         </div>
-                        <button type="submit" class="btn btn-success">Loc</button>
-                        <a href="{{ route('categories.sendMail') }}" class="btn btn-secondary">Send</a>
-                        <a href="{{ route('categories.export', [
-                            'name' => request('name')
-                        ]) }}" class="btn btn-primary">Export</a>
-                        <a href="{{ route('categories.pdf', [
-                            'name' => request('name')
-                        ]) }}" class="btn btn-primary">Pdf</a>
+                        <div class="col-lg-8" >
+                            <form action="sendmessage" method="POST">
+                                @csrf
+                                <input type="hidden" name="user" value="{{ Auth::user()->name }}" >
+                                <textarea class="form-control message"></textarea>
+                                <br/>
+                                <input type="button" value="Send" class="btn btn-success" id="send-message">
+                            </form>
+                        </div>
                     </div>
-
-
-                </form>
-
+                </div>
             </div>
         </div>
     </div>
+</div>
+<script>
+    var socket = io.connect('http://localhost:8890');
+    socket.on('message', function (data) {
+        data = jQuery.parseJSON(data);
+        $( "#messages" ).append( "<strong>"+data.user+":</strong><p>"+data.message+"</p>" );
+    });
+    $("#send-message").click(function(e){
+        e.preventDefault();
+        var _token = $("input[name='_token']").val();
+        var user = $("input[name='user']").val();
+        var message = $(".message").val();
+        if(message != ''){
+            $.ajax({
+                type: "POST",
+                url: '{!! URL::to("sendmessage") !!}',
+                dataType: "json",
+                data: {'_token':_token, 'message':message, 'user':user},
+                success:function(data) {
+                    $(".message").val('');
+                }
+            });
+        }
+    })
+</script>
 @endsection
