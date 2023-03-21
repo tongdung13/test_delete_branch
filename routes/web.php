@@ -34,3 +34,7 @@ Route::get('/dashboard', function () {
     return view('bot-man');
 });
 Route::match(['get', 'post'], '/botman-chat', 'BotManChatController@invoke');
+
+Route::get('/index', function () {
+    return view('index');
+});
