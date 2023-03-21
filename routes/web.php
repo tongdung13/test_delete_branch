@@ -29,3 +29,8 @@ Route::prefix('home')->group(function () {
     Route::get('send-mail', [CategoryController::class, 'sendMail'])->name('categories.sendMail');
 });
 Route::post('send-message', [ChatController::class, 'sendMessage'])->name('sendMessage');
+
+Route::get('/dashboard', function () {
+    return view('bot-man');
+});
+Route::match(['get', 'post'], '/botman-chat', 'BotManChatController@invoke');
