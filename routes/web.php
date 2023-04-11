@@ -38,3 +38,5 @@ Route::match(['get', 'post'], '/botman-chat', 'BotManChatController@invoke');
 Route::get('/index', function () {
     return view('index');
 });
+
+Route::get('user-export', [ChatController::class, 'export']);
