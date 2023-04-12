@@ -11,6 +11,11 @@
         // dd($currenturl);
 
         // dd($cur_route);
-        dd($cur_route['id']);
+        // dd($cur_route['id']);
     @endphp
+
+    <div class="modal" id="myModal">
+        <a href="" >Text</a>
+
+    </div>
 @endsection

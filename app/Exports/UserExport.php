@@ -6,11 +6,12 @@ use App\Models\User;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 
-class UserExport implements FromCollection, WithHeadings, WithEvents
+class UserExport implements FromCollection, WithHeadings, WithEvents, WithMapping
 {
     protected $users;
     protected $selects;
@@ -48,6 +49,7 @@ class UserExport implements FromCollection, WithHeadings, WithEvents
             'department',
             'status',
             'role',
+            'update'
         ];
     }
 
@@ -90,6 +92,19 @@ class UserExport implements FromCollection, WithHeadings, WithEvents
                 }
 
             },
+        ];
+    }
+
+    public function map($item): array
+    {
+        return [
+            $item->name,
+            $item->email,
+            $item->created_at,
+            '',
+            '',
+            '',
+            $item->updated_at,
         ];
     }
 }
