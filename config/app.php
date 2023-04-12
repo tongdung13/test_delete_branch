@@ -69,7 +69,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Ho_Chi_Minh',
 
     /*
     |--------------------------------------------------------------------------
@@ -82,7 +82,8 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'vi',
+    'locales' => ['vi', 'en'],
 
     /*
     |--------------------------------------------------------------------------
@@ -95,7 +96,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => 'vi',
 
     /*
     |--------------------------------------------------------------------------
@@ -213,6 +214,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+        'Predis' => Illuminate\Support\Facades\Redis::class,
     ])->toArray(),
 
 ];

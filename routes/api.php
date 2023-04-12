@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ChatController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,3 +23,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('categories')->group(function () {
     Route::get('', [CategoryController::class, 'index']);
 });
+Route::get('blog', [ChatController::class, 'sendMessage']);

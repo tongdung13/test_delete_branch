@@ -1,8 +1,20 @@
 @extends('admin.layouts.app')
 
 @section('content')
+    <style>
+        .table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .table th,
+        td {
+            border: 1px solid black;
+            text-align: center;
+        }
+    </style>
     <div class="container">
-       <table class="table">
+        <table class="table">
             <thead>
                 <tr>
                     <th>#</th>
@@ -19,6 +31,6 @@
                     </tr>
                 @endforeach
             </tbody>
-       </table>
+        </table>
     </div>
 @endsection
