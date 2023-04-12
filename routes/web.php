@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,3 +42,5 @@ Route::get('/index', function () {
 });
 
 Route::get('user-export', [ChatController::class, 'export']);
+
+Route::get('test', [ProfileController::class, 'export']);

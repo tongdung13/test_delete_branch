@@ -29,7 +29,7 @@ class UserExport implements FromCollection, WithHeadings, WithEvents, WithMappin
             ['columns_name' => 'F', 'options' => $roles],
         ];
         $this->selects = $selects;
-        $this->row_count = 50; //number of rows that will have the dropdown
+        // $this->row_count = User::count(); //number of rows that will have the dropdown
         $this->column_count = 5; //number of columns to be auto sized
     }
 
@@ -38,6 +38,7 @@ class UserExport implements FromCollection, WithHeadings, WithEvents, WithMappin
      */
     public function collection()
     {
+        $this->row_count = User::count(); //number of rows that will have the dropdown
         return User::all();
     }
     public function headings(): array
@@ -70,14 +71,14 @@ class UserExport implements FromCollection, WithHeadings, WithEvents, WithMappin
                     $validation = $event->sheet->getCell("{$drop_column}2")->getDataValidation();
                     $validation->setType(DataValidation::TYPE_LIST);
                     $validation->setErrorStyle(DataValidation::STYLE_INFORMATION);
-                    $validation->setAllowBlank(false);
-                    $validation->setShowInputMessage(true);
-                    $validation->setShowErrorMessage(true);
+                    // $validation->setAllowBlank(false);
+                    // $validation->setShowInputMessage(true);
+                    // $validation->setShowErrorMessage(true);
                     $validation->setShowDropDown(true);
-                    $validation->setErrorTitle('Input error');
-                    $validation->setError('Value is not in list.');
-                    $validation->setPromptTitle('Pick from list');
-                    $validation->setPrompt('Please pick a value from the drop-down list.');
+                    // $validation->setErrorTitle('Input error');
+                    // $validation->setError('Value is not in list.');
+                    // $validation->setPromptTitle('Pick from list');
+                    // $validation->setPrompt('Please pick a value from the drop-down list.');
                     $validation->setFormula1(sprintf('"%s"', implode(',', $options)));
 
                     // clone validation to remaining rows

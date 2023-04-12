@@ -2,17 +2,20 @@
 
 namespace App\Exports;
 
+use App\Models\AuctionDay;
+use App\Models\Item;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 
-class Test implements FromCollection, WithHeadings, WithEvents
+class Test implements FromCollection, WithHeadings, WithEvents, WithMapping
 {
 
     protected $selects;
@@ -26,10 +29,11 @@ class Test implements FromCollection, WithHeadings, WithEvents
      */
     public function __construct($data)
     {
-        $auctionId = User::where('title', $data)->first();
+
+        $auctionId = AuctionDay::where('title', $data)->first();
         $this->auction_id = $auctionId->id;
-        $user = Auth::guard('member')->user();
-        $this->buyer_id = $user->buyer_id;
+        // $user = Auth::user();
+        $this->buyer_id = 0;
 
 
         $status = ['active', 'pending', 'disabled'];
@@ -39,8 +43,9 @@ class Test implements FromCollection, WithHeadings, WithEvents
             ['columns_name' => 'H', 'options' => $status],
         ];
         $this->selects = $selects;
-        $this->row_count = 50; //number of rows that will have the dropdown
+        // $this->row_count = 50; //number of rows that will have the dropdown
         $this->column_count = 5; //number of columns to be auto sized
+
 
     }
 
@@ -50,7 +55,7 @@ class Test implements FromCollection, WithHeadings, WithEvents
         $auction_id = $this->auction_id;
         $buyer_id = $this->buyer_id;
 
-        $items = User::with('bidsHistory', 'categories', 'brands', 'auction_day')
+        $items = Item::with('bidsHistory', 'categories', 'brands', 'auction_day')
             ->select('items.*')
             ->where('items.auction_id', $auction_id)
             ->when($buyer_id, function ($q) use ($buyer_id) {
@@ -59,6 +64,12 @@ class Test implements FromCollection, WithHeadings, WithEvents
             ->groupBy('items.id')
             ->orderby('items.id', 'ASC')
             ->get();
+        $count = Item::with('bidsHistory', 'categories', 'brands', 'auction_day')
+            ->select('items.*')
+            ->where('items.auction_id', $auction_id)
+            ->count();
+//   dd($items);
+        $this->row_count = $count + 2;
         $bidBisory = DB::table('bids_history')->where('auction_id', $this->auction_id)->get();
         foreach ($items as $key => $item) {
             foreach ($bidBisory as $key1 => $value) {
@@ -131,14 +142,36 @@ class Test implements FromCollection, WithHeadings, WithEvents
 
     public function headings(): array
     {
-        // return [
-        //     'オークション No/Auction No.', 'termID', '出品番号/ItemShowCode','元々の指値/ giá gốc','落札希望金額/Giá kỳ vọng', 'スタート価格/Giá khởi điểm',  '出品者ID/ID người show',
-        //    '落札ステータス/Status', 'BidPrice', 'BidMemberId',
-        //
-        // ];
         return [
-            [__('ジャンル (必須)'), __('箱番号'), __('枝番号'), __('出品者ID'), __('オークションID(必須)'), __('ブランド情報'), __('分類'), __('性別'), __('サイズ'), __('商品名(必須)'), __('別展'), __('付属品'), __('落札希望価格(必須)(数字型)')],
-            ['category', 'box', 'box_branch', 'buyer_id', 'auctionid', 'brands', 'classification', 'sex', 'case_size', 'title', 'description', '', 'sell_price',
+            [
+                __('ジャンル (必須)'),
+                __('箱番号'),
+                __('枝番号'),
+                __('出品者ID'),
+                __('オークションID(必須)'),
+                __('ブランド情報'),
+                __('分類'),
+                __('性別'),
+                __('サイズ'),
+                __('商品名(必須)'),
+                __('別展'),
+                __('付属品'),
+                __('落札希望価格(必須)(数字型)')
+            ],
+            [
+                'category',
+                'box',
+                'box_branch',
+                'buyer_id',
+                'auctionid',
+                'brands',
+                'classification',
+                'sex',
+                'case_size',
+                'title',
+                'description',
+                '',
+                'sell_price',
             ]
         ];
     }
@@ -161,7 +194,7 @@ class Test implements FromCollection, WithHeadings, WithEvents
         $designs = isset($item->designs) ? $item->designs : '-';
         $data = '';
         $sell_price = isset($item->sell_price) ? ' ' . $item->sell_price : ' ' . '0';
-
+        // dd($brands);
         return [
             $category,
             $box,

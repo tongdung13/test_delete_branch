@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\Test;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProfileController extends Controller
 {
@@ -56,5 +58,11 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function export()
+    {
+        $data = 'B221012';
+        return Excel::download(new Test($data), 'test.xlsx');
     }
 }
