@@ -17,7 +17,7 @@
                             <div class="col-lg-8">
                                 <form action="sendmessage" method="POST">
                                     @csrf
-                                    <input type="hidden" name="user" value="{{ Auth::user()->name }}">
+                                    <input type="hidden" name="user" value="">
                                     <textarea class="form-control message"></textarea>
                                     <br />
                                     <input type="button" value="Send" class="btn btn-success" id="send-message">
@@ -28,12 +28,17 @@
                 </div>
             </div>
         </div>
+        @php
+            $pre_url = url()->previous();
+
+            dd($pre_url);
+        @endphp
     </div>
     <script>
         var socket = io.connect('http://localhost:8890');
-        socket.on('message', function (data) {
+        socket.on('message', function(data) {
             data = jQuery.parseJSON(data);
-            $( "#messages" ).append( "<strong>"+data.user+":</strong><p>"+data.message+"</p>" );
+            $("#messages").append("<strong>" + data.user + ":</strong><p>" + data.message + "</p>");
         });
         $("#send-message").click(function(e) {
             e.preventDefault();

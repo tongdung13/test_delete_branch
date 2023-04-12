@@ -56,4 +56,10 @@ class CategoryController extends Controller
     {
         return Excel::download(new CategoryExport($request), 'category.pdf', ExcelExcel::DOMPDF);
     }
+
+    public function show($id)
+    {
+        $category = Category::find($id);
+        return view('admin.categories.detail', compact('category'));
+    }
 }
