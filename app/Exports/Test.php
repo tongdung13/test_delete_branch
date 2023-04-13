@@ -5,9 +5,11 @@ namespace App\Exports;
 use App\Models\AuctionDay;
 use App\Models\Item;
 use App\Models\User;
+use BotMan\BotMan\Interfaces\ShouldQueue;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -15,7 +17,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 
-class Test implements FromCollection, WithHeadings, WithEvents, WithMapping
+class Test implements FromCollection, WithHeadings, WithEvents, WithMapping, ShouldQueue, ShouldAutoSize
 {
 
     protected $selects;
@@ -32,7 +34,7 @@ class Test implements FromCollection, WithHeadings, WithEvents, WithMapping
 
         $auctionId = AuctionDay::where('title', $data)->first();
         $this->auction_id = $auctionId->id;
-        // $user = Auth::user();
+        // $user = Auth::user(); //comment choi
         $this->buyer_id = 0;
 
 
@@ -68,11 +70,11 @@ class Test implements FromCollection, WithHeadings, WithEvents, WithMapping
             ->select('items.*')
             ->where('items.auction_id', $auction_id)
             ->count();
-//   dd($items);
+        //   dd($items); // comment choi
         $this->row_count = $count + 2;
         $bidBisory = DB::table('bids_history')->where('auction_id', $this->auction_id)->get();
         foreach ($items as $key => $item) {
-            foreach ($bidBisory as $key1 => $value) {
+            foreach ($bidBisory as $value) {
                 if ($item->id == $value->item_id) {
                     $items[$key]->amount_original = $value->amount_original;
                     $items[$key]->amount = $value->amount;
@@ -177,7 +179,7 @@ class Test implements FromCollection, WithHeadings, WithEvents, WithMapping
     }
     public function map($item): array
     {
-        //        dd($item->auction_id);
+        //        dd($item->auction_id); //
         ini_set('memory_limit', -1);
         set_time_limit(0);
         $category = isset($item->categories['title']) ? ' ' . $item->categories['title'] : '-';
@@ -187,14 +189,12 @@ class Test implements FromCollection, WithHeadings, WithEvents, WithMapping
         $buyer_id = isset($item->buyer_id) ? ' ' . $item->buyer_id : '0';
         $auctionid = isset($item->auction_day['title']) ? ' ' . $item->auction_day['title'] : '0';
         $brands = isset($item->brands['title']) ? ' ' . $item->brands['title'] : '-';
-        // $classification = '';
-        // $sex = '';
         $case_size = isset($item->size) ? $item->size : '-';
         $title = '';
         $designs = isset($item->designs) ? $item->designs : '-';
         $data = '';
         $sell_price = isset($item->sell_price) ? ' ' . $item->sell_price : ' ' . '0';
-        // dd($brands);
+        // dd($brands); //
         return [
             $category,
             $box,

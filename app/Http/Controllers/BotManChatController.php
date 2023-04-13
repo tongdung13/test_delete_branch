@@ -11,10 +11,10 @@ class BotManChatController extends Controller
     public function invoke()
     {
         $botman = app('botman');
-        $botman->hears('{message}', function($botman, $message) {
+        $botman->hears('{message}', function ($botman, $message) {
             if ($message == 'hello') {
                 $this->askName($botman);
-            }else{
+            } else {
                 $botman->reply("Type 'hello' for demo ...");
             }
         });
@@ -23,9 +23,9 @@ class BotManChatController extends Controller
 
     public function askInfo($botman)
     {
-        $botman->ask('Hey There! How are you?', function(Answer $answer) {
+        $botman->ask('Hey There! How are you?', function (Answer $answer) {
             $ans = $answer->getText();
-            $this->say('Whats up '.$ans);
+            $this->say('Whats up ' . $ans);
         });
     }
 }
